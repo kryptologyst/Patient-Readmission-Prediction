@@ -1,0 +1,125 @@
+# Default configuration for patient readmission prediction
+
+# Data configuration
+data:
+  n_samples: 1000
+  n_patients: 500
+  test_size: 0.2
+  val_size: 0.1
+  random_state: 42
+  patient_id_col: "patient_id"
+  target_col: "readmitted"
+  
+  # Feature configuration
+  categorical_features:
+    - "admission_type"
+    - "discharge_disposition"
+    - "admission_source"
+    - "diag_primary"
+    - "gender"
+    - "race"
+    
+  numerical_features:
+    - "age"
+    - "length_of_stay"
+    - "num_lab_procedures"
+    - "num_medications"
+    - "num_procedures"
+    - "num_diagnoses"
+
+# Model configuration
+model:
+  type: "xgboost"  # Options: random_forest, gradient_boosting, logistic_regression, svm, xgboost, lightgbm, catboost, tabular_net, attention_tabular_net
+  
+  # XGBoost parameters
+  xgboost:
+    n_estimators: 100
+    learning_rate: 0.1
+    max_depth: 6
+    subsample: 0.8
+    colsample_bytree: 0.8
+    random_state: 42
+    
+  # LightGBM parameters
+  lightgbm:
+    n_estimators: 100
+    learning_rate: 0.1
+    max_depth: 6
+    subsample: 0.8
+    colsample_bytree: 0.8
+    random_state: 42
+    
+  # Neural network parameters
+  tabular_net:
+    hidden_dims: [128, 64, 32]
+    dropout_rate: 0.3
+    activation: "relu"
+    use_batch_norm: true
+    use_residual: false
+    
+  attention_tabular_net:
+    hidden_dims: [128, 64]
+    num_heads: 4
+    dropout_rate: 0.3
+
+# Training configuration
+training:
+  epochs: 100
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 1e-4
+  patience: 10
+  use_class_weights: true
+  
+  # Cross-validation
+  cv_folds: 5
+  cv_random_state: 42
+
+# Evaluation configuration
+evaluation:
+  threshold: 0.5
+  metrics:
+    - "auc_roc"
+    - "auc_pr"
+    - "sensitivity"
+    - "specificity"
+    - "ppv"
+    - "npv"
+    - "f1_score"
+    - "brier_score"
+    - "ece"
+    
+  # Plotting
+  save_plots: true
+  plot_format: "png"
+  plot_dpi: 300
+
+# Explainability configuration
+explainability:
+  method: "shap"  # Options: shap, permutation
+  max_samples: 100
+  max_display: 20
+  
+  # SHAP configuration
+  shap:
+    background_samples: 100
+    max_samples: 100
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/training.log"
+  
+# Output configuration
+output:
+  base_dir: "outputs"
+  experiment_name: "readmission_prediction"
+  save_model: true
+  save_predictions: true
+  save_explanations: true
+  
+# Reproducibility
+reproducibility:
+  seed: 42
+  deterministic: true
